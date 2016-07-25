@@ -1,0 +1,322 @@
+%!TEX root = presentazioneNBD.tex
+
+\setlength{\parskip}{\baselineskip} 
+\section{Max-Flow Min-Cut Theorems}
+\begin{frame}[t]
+\frametitle{Max-Flow Min-Cut Theorems}
+\begin{block}{What is going to be proved?}
+	\begin{itemize}
+		\item Uniform Multicommodity Flow Problem 
+        \begin{itemize}
+			\item Worst case: The Max-Flow is a $\Omega(\log n)$-factor smaller than the min-cut
+            \item Finding Small Cuts in UMFPs: The Max-Flow is always within a $\Theta(\log n)$-factor of the min-cut for any UMFP
+		\end{itemize}
+	 	\item Product Multicommodity Flow Problem
+        \begin{itemize}
+			\item The Max-Flow is within a $\Theta(\log n)$-factor of the min-cut for any PMFP
+		\end{itemize}
+	 \end{itemize} 
+\end{block}
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Worst case}
+Consider the network G with the following properties:
+\begin{itemize}
+	\item 3- \emph{regular} graph,
+	\item \emph{n} nodes,
+	\item \emph{unit} edge capacity,
+    \item  $| \left \langle U, \bar{U} \right \rangle | \geq c \quad min \{| U | ,  | \bar{U}  | \}$ where $c>0$ and $U\subseteq V$.
+\end{itemize}
+
+The Min-Cut of the corresponding UMFP is 
+
+$$\mathscr{S} = \underset{U\subseteq V}{min} \frac{\left | \left \langle U, \bar{U} \right \rangle \right |}{\left | U \right |\left | \bar{U} \right |} \geq \underset{U\subseteq V}{min} \frac{c}{max \left \{ \left | U \right |, \left | \bar{U} \right | \right \}} = \frac{c}{n-1}$$
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Worst case}
+
+We proceed computing the max-flow in order to verify how far it is from the min-cut.
+
+Since the graph is 3-regular, at most $\frac{n}{2}$ of the nodes are within distance $\log n -3$ of any particular node $v \in V$.
+
+Hence, for at least half of the $\binom{n}{2}$ commodities, the length of the \emph{shortest path} that connects the \emph{source} to the \emph{sink} in \emph{G} is at least $\log n -2$ edges.
+
+Thus, to allow a flow of \emph{f}, for such a commodity, at least $f(\log n -2)$ capacity must be used.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Worst case}
+
+So, to sustain a flow \emph{f} for all the $\binom{n}{2}$ commodity, the capacity of the network must be at least
+$$\frac{1}{2}\binom{n}{2}f(\log n - 2)$$
+
+Due to the \emph{unit} capacity edges, the total capacity is at most $\frac{3n}{2}$. So that for the \emph{capacity constraint},
+
+$$f\leq \frac{3n}{\binom{n}{2}(\log n - 2)} = \frac{6}{(n-1)(\log n -2)}\leq \frac{6\mathscr{S}}{c(\log n -2)}= O\left ( \frac{\mathscr{S}}{\log n} \right )$$
+
+Thus, the max-flow for the UMFP on \emph{G} is at least $\Theta(\log n)$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Worst case}
+
+The following theorem summarizes what has been shown above.
+
+\emph{For any n, there is an n-node uniform multicommodity flow problem with max-flow f and min-cut $\mathscr{S}$ for which} $f \leq O\left ( \frac{\mathscr{S}}{\log n} \right )$.
+
+\end{frame}
+
+\begin{frame}
+%\frametitle{Uniform Multicommodity Flow Problem: Finding Small Cuts in UMFPs}
+
+%We are now going to prove using two different algorithms that the case analyzed previously is the worst one in the sense that the min-cut of a UMFP can never be more than $\Theta(\log n)$.
+%\begin{block}{Algorithms for finding a small cut in UMFPs}
+%	\begin{itemize}
+%		\item Polynomial-time algorithm     
+%	 	\item Algorithm that tends to place in the cut edges with large distance
+        
+%	 \end{itemize} 
+%\end{block}
+
+%\end{frame}
+
+%\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Finding Small Cuts in UMFPs}
+
+There is a polynomial-time algorithm that finds a cut $\left \langle U, \bar{U} \right \rangle$ for any UMFP for which 
+$$\frac{C(U,\bar{U})}{|U||\bar{U}|} \leq O(f \log n)$$  
+
+The quantity $\frac{C(U,\bar{U})}{|U||\bar{U}|}$ is the \emph{ratio cost} of a cut $\left \langle U, \bar{U} \right \rangle$
+
+Recall that the min-cut of a UMFP is 
+
+$$\mathscr{S} = \underset{U\subseteq V}{min} \frac{C(U,\bar{U})}{\left | U \right |\left | \bar{U} \right |}$$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Finding Small Cuts in UMFPs}
+
+\emph{For any uniform multicommodity flow problem,}
+
+$$\Omega\left ( \frac{\mathscr{S}}{\log n} \right ) \leq f \leq \mathscr{S}$$
+
+\emph{where f is the max-flow and $\mathscr{S}$ is the min-cut of the UMFP}.
+
+The algorithm for finding the cut is based on the linear programming dual of the UMFP. 
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Finding Small Cuts in UMFPs}
+
+%A multicommodity problem for a graph \emph{G} consists in apportioning a fixed amount of weight (thought as distances) to the edges of \emph{G} so as to maximize the comulative distance between the \emph{source/sink} pairs.
+
+The dual of \emph{k}-commodity flow problem consists of finding a nonnegative distance $d(e)$ for each edge $e \in E$ so that
+
+$$\sum_{i=1}^{k}D_i d(s_i,t_i) \geq 1$$
+
+and so that 
+$$\sum_{e \in E} C(e)d(e)$$
+
+is minimized, where $d(s_i,t_i)$ is the distance between the \emph{source} and the \emph{sink} for the \emph{i-th} commodity in \emph{G}.
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Finding Small Cuts in UMFPs}
+
+In the case of uniform multicommodity flow the distance constraint is
+$$\sum_{u,v \in V}d(u,v) \geq 1$$
+
+Then, we define 
+
+$$W = \sum_{e \in E} C(e)d(e)$$
+
+as the \emph{total weight} of the distance function.
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Finding Small Cuts in UMFPs}
+
+By solving the dual problem we can find a distance $d(e)$ that satisfies the distance constraint and for which $W=f$.
+
+We are now going to explore another way to find a good cut with ratio cost at most $O(W\log n) = O(f\log n)$.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Alternative way to find the cut}
+
+For this purpose we refer to the following lemma:
+
+\emph{For any graph G with arbitrary edge capacities, any} $\Delta>0$, \emph{and any distance function with total weight W it is possible to partition G into components with radius at most} $\Delta$ \emph{so that the capacity of the edges connecting nodes in different components is at most} $\frac{4W\log n}{\Delta}$
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Proof lemma}
+
+Let $C = \sum_{e \in E} C(e)$ be the total capacity on the edges of \emph{G}
+
+\begin{itemize}
+\item When $\Delta \leq \frac{4W\log n}{C}$ we use the partition where each node is in a different component. Each component has radius $\Delta \geq 0$ and the capacity of the edges running between the components is at most $\frac{4W\log n}{\Delta}$.
+
+\item When $\Delta \geq \frac{4W\log n}{C}$ we proceed with the construction of a second graph $G^{+}$
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Build $G^{+}$}
+
+\begin{itemize}
+\item Replace each edge of \emph{G} with a path of $\left \lceil \frac{Cd(e)}{W} \right \rceil$ edges
+\item Assign to each edge of the path capacity $C(e)$ and distance 1
+\end{itemize}
+
+Thus, create the partitions
+
+\begin{itemize}
+\item Select an arbitrary node $v \in G^{+}$ that corresponds to a node in G
+\item For each $i \geq 0$ define $G_i^{+}$ to be the subgraph of $G^{+}$ consisting of nodes and edges within distance $i$ of $v$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Partition $G^{+}$}
+
+Let 
+\begin{itemize}
+\item $C_0 = \left ( \frac{2C}{n} \right )$ for $i>0$
+\item $C_i$ the total capacity of the edges in $G_{i}^{+}$
+\end{itemize}
+
+Denoting with $j$ the smallest value of $i\geq 0$ for which $C_{i+1} < (1+\epsilon)C_i$, where $\epsilon = \frac{W \log n}{\Delta C}<\frac{1}{4}$.
+
+The nodes and edges in $G_j^{+}$ form the first component of the partition. The other components are built by removing $G_j^{+}$ from $G^{+}$ and then repeat the entire process until there are no longer nodes $v \in G^{+}$ that correspond to nodes in $G$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Proof}
+
+Define $C^{+}$ the total initial capacity of $G^{+}$. Depending on the construction of $G^{+}$ we know that 
+
+$$C^{+} = \sum_{e \in E} C(e)\left \lceil \frac{Cd(e)}{W} \right \rceil \leq \sum_{e \in E}C(e) + \frac{C}{W}\sum_{e \in E}C(e)d(e) = 2C$$
+
+Since the $G^{+}$ partitions of $G^{+}$ are disjoint, the total capacity on all edges leaving all components in $G^{+}$ is at most
+
+$$\epsilon(C^{+}+nC_0) \leq 2\epsilon C^{+} 2\epsilon C = 4\epsilon C$$
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Proof}
+
+The partition for $G$ is derived from the components of $G^{+}$. Two nodes of $G$ are in the same partition of $G \Leftrightarrow$ are in the same component in $G^{+}$.
+
+Moreover, any $e \in G$ that links two components in $G$ corresponds to a path of capacity $C(e)$ edges in $G^{+}$ that was cut to form at least one of the corresponding components in $G^{+}$.
+
+So that, the total capacity of the edges linking different components in $G$ is at most $4\epsilon C = \frac{4W\log n }{\Delta}$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Ratio cost}
+
+Recall that we want to check that the value that the ratio cost of a cut is at most $O(W\log n)$, we proceed with the following
+
+\emph{For any graph G and any distance function with total weight W, we can either
+\begin{itemize}
+\item find a component with radius $\frac{1}{2n^2}$ that contains at least $\frac{2}{3}$ of the nodes in G
+\item find a cut of G with ratio cost $O(W\log n)$
+\end{itemize}}
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Ratio cost}
+
+Apply the result of the previous lemma using $\Delta = \frac{1}{2n^2}$
+
+\begin{itemize}
+\item Whether one of the components obtained applying the lemma contains at least $\frac{2}{3}$ of the nodes of $G$ we are done
+\item Otherwise we divide the components into two sets so that each sets contains at least $\frac{n}{3}$ nodes $\rightarrow$ the edge capacity of the cut is at most $\frac{4W\log n}{\Delta} = 8Wn^2 \log n$
+$$\Downarrow$$
+$$\frac{8Wn^2 \log n}{\left ( \frac{2n}{3} \right )\left ( \frac{n}{3} \right )} = 36W\log n = O(W \log n)$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Uniform Multicommodity Flow Problem: Further theorems}
+
+\begin{itemize}
+\item \emph{For any graph $G$, if there is a distance function $d$ with total weight W and a subset of nodes $T \subseteq V$ with $|T|\geq \frac{2n}{3}$ and $\sum_{u \in V-T}d(T,t) \geq \frac{1}{2n}$ then we can find a cut with ratio cost $O(W)$} 
+\item \emph{Given a graph $G$ and a distance function with total weight W that satisfies the distance contraint, we can find a cut with ratio cost $O(W\log n)$}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Product Multicommodity Flow Problem}
+
+In a PMFP 
+\begin{itemize}
+\item Each node $u \in V$ is associated with a nonnegative weight $\pi (u)$
+\item The demand for the commodity between nodes $u$ and $v$ is set to be $\pi (u) \pi (v)$
+\end{itemize}
+
+In what follows, we will show how to find a cut $\left \langle U, \bar{U} \right \rangle$ for which the weighted ratio cost
+
+$$\frac{C(U,\bar{U})}{\pi (U)\pi (V)}$$
+
+is at most $O(f\log p)$ where $f$ is the max-flow.
+\end{frame}
+
+\begin{frame}
+\frametitle{Product Multicommodity Flow Problem}
+\begin{itemize}
+\item Consider $\mathscr{P}$ as the subset of nodes for which $\pi$ is nonzero, and we set $p=|\mathscr{P}|$
+\item Assume $\sum_{u \in V}\pi (u) = p$ for each PMFP
+\item The number of commodities with nonzero demand is $k = \binom{n}{2}$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Product Multicommodity Flow Problem: Theorem}
+\emph{For any product multicommodity flow problem with k commodities, 
+$$\Omega\left ( \frac{\mathscr{S}}{\log k} \right ) \leq f \leq \mathscr{S}$$
+where $f$ is the max-flow and $\mathscr{S}$ is the min-cut of the PMFP.}
+
+Also in that case the cut with small weighted ratio cost is find out with the same algorithm used before, even if in that case the constraint is the following
+
+$$\sum_{\{u,v\} \in \mathscr{P}^2} \pi (u) \pi (v) d(u,v) \geq 1$$
+
+Thus here follow some theorems that are proved using the same procedures just changing some details.
+\end{frame}
+
+\begin{frame}
+\frametitle{Product Multicommodity Flow Problem: Theorem}
+
+\begin{itemize}
+\item \emph{For any graph G, any $\Delta \geq 0$, any distance function with total weight W, and any set of $p$ nodes $\mathscr{P}$ with nonzero node weight, it is possible to partition G into components so that
+\begin{itemize}
+\item any component containing a node of $\mathscr{P}$ has radius at most $\Delta$
+\item the capacity of the edges linking nodes in different components is at most $\frac{4W \log p}{\Delta}$
+\end{itemize}}
+\item \emph{For any graph G, any distance function with total weight W, and any set $\mathscr{P}$ of $p$ nodes with nonzero node weight, we can either
+\begin{itemize}
+\item find a component T with radius $\frac{1}{2p^2}$ for which $\pi (T) \geq \frac{2p}{3}$ or
+\item find a cut of $G$ with the weighted ratio cost $O(W \log p)$
+\end{itemize}}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Product Multicommodity Flow Problem: Theorem}
+
+\begin{itemize}
+\item \emph{For any node-weighted graph $G$, if there is a distance function $d$ with total weight W and a subset of nodes $T \subseteq V$ for which $\pi (T) \geq \frac{2p}{3}$ and $\sum_{u} \in \mathscr{P}-T \pi (u)d(T,u) \geq \frac{1}{2p}$, than we can find a cut with ration cost $O(W)$}
+\item \emph{Given a node-weighted graph G and a distance function with total weight W that satisfies the (weighted) distance-constraint, we can find a cut with weighted ratio cost $O(W \log p)$}
+\end{itemize}
+
+\end{frame}
